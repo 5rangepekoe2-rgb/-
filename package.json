@@ -4,7 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "fix-comments": "node scripts/fix-comments.mjs",
+    "predev": "npm run fix-comments",
     "dev": "vite",
+    "prebuild": "npm run fix-comments",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview"
