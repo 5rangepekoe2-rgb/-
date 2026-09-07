@@ -6,18 +6,13 @@ import {
   Sparkles, 
   Database, 
   Key, 
-  RefreshCw, 
   Search, 
   PlusCircle, 
   Terminal, 
-  CheckCircle2, 
-  Flame, 
   ShieldCheck, 
-  User, 
   ExternalLink,
   Code,
   Zap,
-  Sliders,
   Copy,
   Check
 } from 'lucide-react';
@@ -116,6 +111,9 @@ export function App() {
   const [commentAuthor, setCommentAuthor] = useState<string>('');
   const [commentContent, setCommentContent] = useState<string>('');
 
+  // Copy state helper
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+
   // Load initial posts and comments from localStorage fallback if Supabase table not yet pushed
   useEffect(() => {
     const savedPosts = localStorage.getItem('nexus_posts');
@@ -158,12 +156,13 @@ export function App() {
         setSupabaseClient(client);
         setIsConnected(true);
         fetchSupabasePosts(client);
+        fetchSupabaseComments(client);
       } catch (err) {
         console.error('Supabase init error:', err);
         setIsConnected(false);
       }
     }
-  }, []);
+  }, [supabaseUrl, supabaseKey]);
 
   const saveCredentials = (url: string, key: string) => {
     localStorage.setItem('sb_url', url);
@@ -177,6 +176,7 @@ export function App() {
         setSupabaseClient(client);
         setIsConnected(true);
         fetchSupabasePosts(client);
+        fetchSupabaseComments(client);
         alert('Supabase 연동이 완료되었습니다! 데이터베이스와 연결되었습니다.');
       } catch (err) {
         alert('Supabase 연결 오류: URL과 Key를 확인해 주세요.');
