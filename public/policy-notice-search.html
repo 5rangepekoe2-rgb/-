@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>정책 공지사항 빠른 검색</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:"Pretendard","Noto Sans KR","Malgun Gothic",Arial,sans-serif;background:#f4f7fb;color:#172033}.wrap{max-width:1100px;margin:auto;padding:42px 20px 60px}.tag{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef4ff;color:#2457c5;font-size:13px;font-weight:700}h1{margin:10px 0 8px;font-size:38px;letter-spacing:-.04em}.sub{margin:0 0 24px;color:#687386}.toolbar{background:#fff;border:1px solid #dfe5ee;border-radius:18px;padding:18px;box-shadow:0 10px 26px rgba(23,32,51,.08);margin-bottom:18px}.search{display:grid;grid-template-columns:1fr 220px;gap:12px}input,select{width:100%;padding:13px 14px;border:1px solid #dfe5ee;border-radius:12px;font-size:15px;background:#fff}input:focus,select:focus{outline:none;border-color:#2457c5;box-shadow:0 0 0 3px rgba(36,87,197,.12)}.meta{display:flex;justify-content:space-between;align-items:center;margin-top:14px;color:#687386;font-size:14px}.meta strong{color:#2457c5}.reset{border:0;background:transparent;color:#2457c5;font-weight:700;cursor:pointer}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{background:#fff;border:1px solid #dfe5ee;border-radius:18px;padding:20px;box-shadow:0 8px 22px rgba(23,32,51,.05)}.badge{display:inline-block;padding:6px 9px;border-radius:999px;background:#eef4ff;color:#2457c5;font-size:12px;font-weight:800}.card h2{font-size:19px;margin:12px 0 16px;line-height:1.45}.info{display:grid;gap:8px;font-size:14px;color:#687386}.row{display:flex;gap:10px}.label{min-width:54px;color:#8791a2;font-weight:700}.empty{grid-column:1/-1;background:#fff;border:1px dashed #dfe5ee;border-radius:18px;padding:42px;text-align:center;color:#687386}@media(max-width:760px){.search,.grid{grid-template-columns:1fr}h1{font-size:30px}.wrap{padding-top:28px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<span class="tag">행정안전부 정책 공지</span>
+<h1>정책 공지사항 빠른 검색</h1>
+<p class="sub">제목 또는 분야를 검색하고, 분야별로 필요한 공지만 빠르게 확인할 수 있습니다.</p>
+<section class="toolbar">
+<div class="search">
+<input id="q" type="search" placeholder="제목 또는 분야 검색" aria-label="제목 또는 분야 검색">
+<select id="f" aria-label="분야 필터"><option value="">전체 분야</option></select>
+</div>
+<div class="meta"><div id="count">결과 0건</div><button id="reset" class="reset">검색 조건 초기화</button></div>
+</section>
+<section id="grid" class="grid"></section>
+</main>
+<script>
+const notices=[
+{"id":1,"분야":"행정혁신","제목":"디지털혁신 우수사례 공모","담당과":"디지털혁신과","연락처":"044-205-1234"},
+{"id":2,"분야":"안전관리","제목":"여름철 폭우 대비 안전점검","담당과":"재난관리정책과","연락처":"044-205-2345"},
+{"id":3,"분야":"민원서비스","제목":"통합민원포털 개편 안내","담당과":"민원혁신과","연락처":"044-205-3456"},
+{"id":4,"분야":"청렴윤리","제목":"공직자 청렴교육 정례화","담당과":"감사담당관실","연락처":"044-205-4567"},
+{"id":5,"분야":"행정혁신","제목":"공공서비스 사용자 만족도 조사","담당과":"정책기획관실","연락처":"044-205-5678"},
+{"id":6,"분야":"교육훈련","제목":"하반기 신규 공무원 합동연수","담당과":"인재개발과","연락처":"044-205-6789"},
+{"id":7,"분야":"국제협력","제목":"OECD 디지털정부 워크숍","담당과":"국제협력담당관실","연락처":"044-205-7890"},
+{"id":8,"분야":"민원서비스","제목":"모바일 신분증 발급 확대","담당과":"디지털혁신과","연락처":"044-205-8901"},
+{"id":9,"분야":"안전관리","제목":"학교 안전점검 결과 발표","담당과":"안전관리과","연락처":"044-205-9012"},
+{"id":10,"분야":"행정혁신","제목":"공공데이터 개방 우수기관 시상","담당과":"데이터정책과","연락처":"044-205-0123"}];
+const q=document.getElementById("q"),f=document.getElementById("f"),count=document.getElementById("count"),grid=document.getElementById("grid"),reset=document.getElementById("reset");
+[...new Set(notices.map(x=>x["분야"]))].sort((a,b)=>a.localeCompare(b,"ko")).forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;f.appendChild(o)});
+function esc(v){return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function render(){const k=q.value.trim().toLowerCase(),fv=f.value;const list=notices.filter(x=>(!k||x["제목"].toLowerCase().includes(k)||x["분야"].toLowerCase().includes(k))&&(!fv||x["분야"]===fv));count.innerHTML="결과 <strong>"+list.length+"</strong>건";grid.innerHTML=list.length?list.map(x=>'<article class="card"><span class="badge">'+esc(x["분야"])+'</span><h2>'+esc(x["제목"])+'</h2><div class="info"><div class="row"><span class="label">담당과</span><span>'+esc(x["담당과"])+'</span></div><div class="row"><span class="label">연락처</span><span>'+esc(x["연락처"])+'</span></div></div></article>').join(""):'<div class="empty">조건에 맞는 정책 공지가 없습니다.</div>'}
+q.addEventListener("input",render);f.addEventListener("change",render);reset.addEventListener("click",()=>{q.value="";f.value="";render();q.focus()});render();
+</script>
+</body>
+</html>
